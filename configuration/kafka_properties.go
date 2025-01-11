@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"github.com/magiconair/properties"
+	"os"
 )
 
 type KafkaProperties struct {
@@ -15,14 +16,21 @@ type KafkaProperties struct {
 func ProvideKafkaProperties() (*KafkaProperties, error) {
 	p, err := properties.LoadFile("config.properties", properties.UTF8)
 	if err != nil {
-		return nil, err
+		p = properties.NewProperties()
+	}
+
+	getValueOrDefault := func(envKey, propKey, defaultValue string) string {
+		if envValue := os.Getenv(envKey); envValue != "" {
+			return envValue
+		}
+		return p.GetString(propKey, defaultValue)
 	}
 
 	return &KafkaProperties{
-		BootstrapServers: p.GetString("kafka.bootstrap.servers", ""),
-		GroupID:          p.GetString("kafka.group.id", ""),
-		ConsumerTopic:    p.GetString("kafka.topic.consumer", ""),
-		ProducerTopic:    p.GetString("kafka.topic.producer", ""),
-		AutoOffsetReset:  p.GetString("kafka.auto.offset.reset", "earliest"),
+		BootstrapServers: getValueOrDefault("KAFKA_BOOTSTRAP_SERVERS", "kafka.bootstrap.servers", "localhost:9092"),
+		GroupID:          getValueOrDefault("KAFKA_GROUP_ID", "kafka.group.id", "default-group"),
+		ConsumerTopic:    getValueOrDefault("KAFKA_CONSUMER_TOPIC", "kafka.topic.consumer", "consumer-topic"),
+		ProducerTopic:    getValueOrDefault("KAFKA_PRODUCER_TOPIC", "kafka.topic.producer", "producer-topic"),
+		AutoOffsetReset:  getValueOrDefault("KAFKA_AUTO_OFFSET_RESET", "kafka.auto.offset.reset", "earliest"),
 	}, nil
 }
