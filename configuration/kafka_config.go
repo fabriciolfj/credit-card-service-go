@@ -6,7 +6,7 @@ import (
 
 type KafkaConfig struct {
 	Producer sarama.AsyncProducer
-	Consumer sarama.Consumer
+	Consumer sarama.ConsumerGroup
 }
 
 func ProvideKafkaConfig(cfg *KafkaProperties) (*KafkaConfig, error) {
@@ -22,7 +22,7 @@ func ProvideKafkaConfig(cfg *KafkaProperties) (*KafkaConfig, error) {
 		return nil, err
 	}
 
-	consumer, err := sarama.NewConsumer([]string{cfg.BootstrapServers}, config)
+	consumer, err := sarama.NewConsumerGroup([]string{cfg.BootstrapServers}, cfg.GroupID, config)
 	if err != nil {
 		return nil, err
 	}

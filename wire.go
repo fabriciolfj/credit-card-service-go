@@ -4,21 +4,22 @@
 package main
 
 import (
+	"github.com/fabriciolfj/credit-card-service-go/client"
 	"github.com/fabriciolfj/credit-card-service-go/configuration"
-	"github.com/fabriciolfj/credit-card-service-go/kafka"
 	"github.com/fabriciolfj/credit-card-service-go/listeners"
 	"github.com/fabriciolfj/credit-card-service-go/producer"
 	"github.com/fabriciolfj/credit-card-service-go/services"
 	"github.com/google/wire"
 )
 
-func InitializeKafkaService() (*kafka.KafkaService, error) {
+func InitializeApp() (*listeners.CardApproveListener, error) {
 	wire.Build(
 		configuration.ProvideKafkaProperties,
 		configuration.ProvideKafkaConfig,
-		listeners.ProvideCardApproveListener,
 		producer.ProviderCardResultProducer,
+		client.ProvideRequestCard,
 		services.ProviderValidationService,
+		listeners.ProvideCardApproveListener,
 	)
-	return &kafka.KafkaService{}, nil
+	return &listeners.CardApproveListener{}, nil
 }
