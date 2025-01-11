@@ -28,7 +28,7 @@ func ProvideRequestCard() *RequestCard {
 }
 
 func (r *RequestCard) FindApprove(code string) (*model.CardCustomerApproveDto, error) {
-	resp, err := http.Get(r.url + "/" + code)
+	resp, err := http.Get(r.url + "/credit/" + code)
 
 	if err != nil {
 		panic(errors.New("http get error, details " + err.Error()))

@@ -18,7 +18,7 @@ func ProviderValidationService(producerMessage *producer.CardResultProducer, cli
 }
 
 func (vl *ValidationService) Execute(cardCustomer *entities.CardCustomer) error {
-	result, err := vl.client.FindApprove(cardCustomer.Code)
+	result, err := vl.client.FindApprove(cardCustomer.Identifier)
 
 	if err != nil {
 		return fmt.Errorf("fail request %w, details %w", cardCustomer.Code, err.Error())
