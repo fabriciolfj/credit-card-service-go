@@ -26,7 +26,7 @@ func (p *CardResultProducer) Close() error {
 
 func (p *CardResultProducer) SendMessage(message string) error {
 	msg := &sarama.ProducerMessage{
-		Topic: "seu-topico",
+		Topic: "result-approve",
 		Value: sarama.StringEncoder(message),
 	}
 
